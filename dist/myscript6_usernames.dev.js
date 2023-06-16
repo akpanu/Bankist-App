@@ -181,4 +181,38 @@ try {
   }
 }
 
-console.log("Acct 1 balance using for: ", balancesAcct1_for);
+console.log("Acct 1 balance using for: ", balancesAcct1_for); // Obtaining the maximum Account1 balance using the reduce method
+
+console.log("Obtaining the max amt in Account1 object using the reduce method");
+
+var maxAmt = function maxAmt(mvmnts) {
+  return mvmnts.reduce(function (acc, val) {
+    return Math.max(acc, val);
+  }, mvmnts[0]);
+};
+
+console.log("Maximum value in the array: ".concat(maxAmt(account1.movements))); // Method chaining - PIPELINE
+
+console.log("-----Method chaining------");
+var eurosUSD = 1.1;
+var depositsUSD = account1.movements.filter(function (amt) {
+  return amt > 0;
+}).map(function (amt) {
+  return amt * eurosUSD;
+}).reduce(function (acc, amt, ind) {
+  return acc + amt;
+}, 0);
+console.log(depositsUSD.toFixed(3)); // Demonstrating the find method
+
+console.log("-----Demonstrating the find method-----");
+var firstWithdrawal = account1.movements.find(function (amt) {
+  return amt < 0;
+});
+console.log("Entire array: ", account1.movements);
+console.log("First withdrawal: ".concat(firstWithdrawal)); // Locating an account using the find method
+
+console.log("Locating an account using the find method");
+var acctJess = accounts.find(function (acct) {
+  return acct.owner === "Jessica Davis";
+});
+console.log(acctJess);

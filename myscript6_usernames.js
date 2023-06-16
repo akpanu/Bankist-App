@@ -120,3 +120,29 @@ for (const item of account1.movements) {
   balancesAcct1_for += item;
 }
 console.log(`Acct 1 balance using for: `, balancesAcct1_for);
+
+// Obtaining the maximum Account1 balance using the reduce method
+console.log(`Obtaining the max amt in Account1 object using the reduce method`);
+const maxAmt = mvmnts =>
+  mvmnts.reduce((acc, val) => Math.max(acc, val), mvmnts[0]);
+console.log(`Maximum value in the array: ${maxAmt(account1.movements)}`);
+
+// Method chaining - PIPELINE
+console.log(`-----Method chaining------`);
+const eurosUSD = 1.1;
+const depositsUSD = account1.movements
+  .filter(amt => amt > 0)
+  .map(amt => amt * eurosUSD)
+  .reduce((acc, amt, ind) => acc + amt, 0);
+console.log(depositsUSD.toFixed(3));
+
+// Demonstrating the find method
+console.log(`-----Demonstrating the find method-----`);
+const firstWithdrawal = account1.movements.find(amt => amt < 0);
+console.log(`Entire array: `, account1.movements);
+console.log(`First withdrawal: ${firstWithdrawal}`);
+
+// Locating an account using the find method
+console.log(`Locating an account using the find method`);
+const acctJess = accounts.find(acct => acct.owner === `Jessica Davis`);
+console.log(acctJess);
