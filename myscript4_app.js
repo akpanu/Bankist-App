@@ -33,6 +33,7 @@ const account4 = {
   pin: 4444,
 };
 
+// array of individual account objects
 const accounts = [account1, account2, account3, account4];
 
 // Elements
@@ -88,9 +89,13 @@ const updateUI = acct => {
   calcDisplaySummary(acct);
 };
 
-const displayBalances = function (account) {
+const displayBalances = function (account, sorted = false) {
   containerMovements.innerHTML = ``; // clear current contents of the container
-  account.movements.forEach((val, index) => {
+
+  const moves = sorted
+    ? account.movements.slice().sort((a, b) => a - b) // call slice method to return a copy of the array to prevent mutating the original array
+    : account.movements;
+  moves.forEach((val, index) => {
     const type = val > 0 ? `deposit` : `withdrawal`;
 
     const htmlText = `
@@ -192,9 +197,12 @@ btnTransfer.addEventListener(`click`, e => {
     acct => acct.username === inputTransferTo.value
   );
   console.log(transferAmt, receivingAcct);
+  inputTransferAmount.value = inputTransferTo.value = ``;
+  inputTransferAmount.blur();
 
   // ensure that there is sufficient funds,
-  // transfer amount is greater than zero
+  // transfer amount is greater than zero,
+  // check whether the receiving acct is available
   // and the receiving acct is not equal to current Acct
   if (
     transferAmt > 0 &&
@@ -210,4 +218,45 @@ btnTransfer.addEventListener(`click`, e => {
     // update the UI
     updateUI(currentAccount);
   }
+});
+
+// Apply for loan
+btnLoan.addEventListener(`click`, e => {
+  e.preventDefault();
+
+  const loanAmt = Number(inputLoanAmount.value);
+  if (
+    loanAmt > 0 &&
+    currentAccount.movements.some(amt => amt >= loanAmt * 0.1)
+  ) {
+    currentAccount.movements.push(loanAmt);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = ``;
+});
+
+// Implementing sortng
+let sortedState = false;
+btnSort.addEventListener(`click`, e => {
+  e.preventDefault();
+
+  displayBalances(currentAccount, !sortedState);
+  sortedState = !sortedState;
+});
+// Implementing the close account feature
+btnClose.addEventListener(`click`, e => {
+  e.preventDefault();
+
+  if (
+    currentAccount?.username === inputCloseUsername.value &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    // console.log(`Deleted`);
+    const deleteAcctIndex = accounts.findIndex(
+      acct => acct.username === currentAccount.username
+    );
+    accounts.splice(deleteAcctIndex, 1); // delete the current account
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = ``;
 });

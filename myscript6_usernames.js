@@ -146,3 +146,196 @@ console.log(`First withdrawal: ${firstWithdrawal}`);
 console.log(`Locating an account using the find method`);
 const acctJess = accounts.find(acct => acct.owner === `Jessica Davis`);
 console.log(acctJess);
+
+// Demonstrating includes, some and every
+console.log(`Demonstrating includes, some and every`);
+// includes
+console.log(`Account 1 movements:`, account1.movements);
+console.log(`Includes -130?`, account1.movements.includes(-130));
+console.log(`Includes 650?`, account1.movements.includes(650));
+
+// some
+console.log(
+  `Contains amount less than 1000?`,
+  account1.movements.some(mov => mov < 1000)
+);
+
+// every
+console.log(`Account 2 movements:`, account2.movements);
+console.log(
+  `Are all elements deposits?`,
+  account2.movements.every(amt => amt > 0)
+);
+console.log(
+  `Are all elements withdrawals?`,
+  account2.movements.every(amt => amt < 0)
+);
+console.log(
+  `Are some elements deposits?`,
+  account4.movements.some(amt => amt > 0)
+);
+
+console.log(`Account 4 movements:`, account4.movements);
+console.log(
+  `Are all elements deposits?`,
+  account4.movements.every(amt => amt > 0)
+);
+console.log(
+  `Are all elements withdrawals?`,
+  account4.movements.every(amt => amt < 0)
+);
+
+// Demonstrating flat and flatMap methods
+console.log(`------Demonstrating flat and flatMap methods--------`);
+const arr1 = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(`Original array: `, arr1);
+console.log(`Flattened array: `, arr1.flat());
+
+const arr2 = [[1, 2, 3], [2, 3, 5, [3, [6, 9], 4, 3]], 8, 3, 6, 8];
+console.log(`Original deeply nested array`, arr2);
+console.log(`Flattened nested array: `, arr2.flat(4));
+
+// Obtaining all the balances using map, flat and reduce
+// on all accounts in the accounts array
+console.log(`Total available balance in all accounts: `);
+const allAcctBalance = accounts
+  .map(acct => acct.movements) // obtain all movements
+  .flat() // flatten all movements into a single dim array
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(`Total account balance: `, allAcctBalance);
+
+// using the flatMap method to enhance performance
+console.log(`-----using the flatMap method to enhance performance-----`);
+const allAcctBalance2 = accounts
+  .flatMap(acct => acct.movements)
+  .reduce((acc, amt) => acc + amt, 0);
+console.log(`Total acct balance using flatMap: `, allAcctBalance2);
+
+// SORTING
+// strings
+console.log(`-----Demonstrating Sorting (strings)-----`);
+const names = [`Jonas`, `Mark`, `Zack`, `Martha`, `Uwem`, `Mfoniso`];
+console.log(`Original array:`, names);
+console.log(
+  `Sorted arrays (original array muted in the process: )`,
+  names.sort()
+);
+console.log(`Original array:`, names);
+
+// numbers
+console.log(`-----Demonstrating Sorting (numbers)-----`);
+const acct1 = account1.movements;
+// sorting asc
+console.log(`---Ascending---`);
+console.log(`Original account 1 movements: `, account1.movements);
+// const sortAscending = acct1.sort((a, b) => {
+//   let result = 0;
+//   if (a < b) result = -1;
+//   if (a > b) result = 1;
+//   return result;
+// });
+// more performant code below:
+const sortAscending = acct1.sort((a, b) => a - b);
+console.log(`Sorted account 1 movements (asc): `, sortAscending);
+// sortng desc
+// const sortDescending = acct1.sort((a, b) => {
+//   let result;
+//   if (a < b) result = 1;
+//   if (a > b) result = -1;
+//   return result;
+// });
+// more performant code below:
+const sortDescending = acct1.sort((a, b) => b - a);
+console.log(`Sorted account 1 movements (desc)`, sortDescending);
+
+// Creating arrays programmatically
+console.log(`------Creating arrays programmatically-------`);
+const arrEven = Array.from({ length: 10 }, (curr, index) => (index *= 2));
+console.log(arrEven);
+
+// Generating 100 random integers
+const randonNum = Array.from({ length: 100 }, () =>
+  Math.ceil(Math.random() * 100)
+);
+console.log(randonNum);
+
+// Obtaining total deposits in all accounts
+console.log(`Total deposits in all accounts`);
+const totalDepositSum = accounts
+  .flatMap(acct => acct.movements)
+  .filter(amt => amt > 0)
+  .reduce((sum, amt) => sum + amt, 0);
+console.log(totalDepositSum);
+
+console.log(`---Total deposits with at least 1000---`);
+const totalDep1k = accounts
+  .flatMap(acct => acct.movements)
+  .filter(amt => amt >= 1000).length;
+// .reduce((acc, item, ix) => acc + 1, 0);
+console.log(`Deposits above 1k inclusive: `, totalDep1k);
+
+const totalDep1k2 = accounts
+  .flatMap(acct => acct.movements)
+  .reduce((acc, amt) => (amt >= 1000 ? ++acc : acc), 0);
+console.log(`Deposits above 1k inclusive2: `, totalDep1k2);
+
+// creating new objects using the reduce method
+console.log(`------Creating new objects using the reduce method------`);
+const sumWithDep = (acc, deposits = 0, withdrawals = 0) =>
+  acc
+    .flatMap(acc => acc.movements)
+    .reduce((_, val) => {
+      val > 0 ? (deposits += val) : (withdrawals += val);
+      return { withdrawals, deposits };
+    }, 0);
+const sumWithDepObject = sumWithDep(accounts);
+console.log(sumWithDepObject);
+
+const sumWithDep2 = accts =>
+  accts
+    .flatMap(accts => accts.movements)
+    .reduce(
+      (sums, value) => {
+        // value > 0 ? (sums.deposits += value) : (sums.withdrawals += value); // more efficient cbode below
+        sums[value > 0 ? `deposits` : `withdrawals`] += value;
+        return sums;
+      },
+      { deposits: 0, withdrawals: 0 }
+    );
+const sumWithDepObject2 = sumWithDep2(accounts);
+console.log(sumWithDepObject2);
+
+// creating a title case sentence
+const titledSentence = sentence => {
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+  const exceptions = [
+    `a`,
+    `an`,
+    `the`,
+    `but`,
+    `or`,
+    `on`,
+    `and`,
+    `not`,
+    `in`,
+    `with`,
+    `is`,
+  ];
+  const capitalizedSentence = sentence
+    .toLowerCase()
+    .split(` `)
+    .map(
+      str => (exceptions.includes(str) ? str : capitalize(str))
+      // : str.replace(str[0], str[0].toUpperCase());
+    )
+    .join(` `);
+  return capitalize(capitalizedSentence);
+};
+
+const s1 = `this is a nice title`;
+const s2 = `this is a LONG title but not too long`;
+const s3 = `and here is another title with AN EXAMPLE and ILLustRATion`;
+console.log(titledSentence(s1));
+console.log(titledSentence(s2));
+console.log(titledSentence(s3));
+// console.log(s1, s2, s3);
