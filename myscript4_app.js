@@ -103,7 +103,7 @@ const displayBalances = function (account, sorted = false) {
       <div class="movements__type movements__type--${type}">
         ${index + 1} ${type}
       </div>
-      <div class="movements__value">${val}€</div>
+      <div class="movements__value">${val.toFixed(2)}€</div>
     </div>
     `;
 
@@ -119,7 +119,7 @@ const calcDisplayBal = acct => {
     (accumulator, amt) => accumulator + amt,
     0
   );
-  labelBalance.textContent = `${acct.balance}€`;
+  labelBalance.textContent = `${acct.balance.toFixed(2)}€`;
 };
 // const currentBal = calcDisplayBal(movements);
 // labelBalance.textContent = `${currentBal}€`;
@@ -140,9 +140,9 @@ const calcDisplaySummary = function (account) {
     .filter(interest => interest >= 1.0)
     .reduce((acc, intrst) => acc + intrst, 0);
 
-  labelSumIn.textContent = `${deposits}€`;
-  labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumIn.textContent = `${deposits.toFixed(2)}€`;
+  labelSumOut.textContent = `${Math.abs(withdrawals).toFixed(2)}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 // calcDisplaySummary(account1.movements);
 
@@ -171,7 +171,7 @@ btnLogin.addEventListener(`click`, e => {
   );
   console.log(currentAccount);
 
-  if (currentAccount.pin === Number(inputLoginPin.value)) {
+  if (currentAccount.pin === +inputLoginPin.value) {
     // Display UI and message
     inputLoginUsername.value = ``;
     inputLoginPin.value = ``;
@@ -192,7 +192,7 @@ btnTransfer.addEventListener(`click`, e => {
   e.preventDefault();
 
   // obtain amount and receiving acct details
-  const transferAmt = Number(inputTransferAmount.value);
+  const transferAmt = +inputTransferAmount.value;
   const receivingAcct = accounts.find(
     acct => acct.username === inputTransferTo.value
   );
@@ -224,7 +224,7 @@ btnTransfer.addEventListener(`click`, e => {
 btnLoan.addEventListener(`click`, e => {
   e.preventDefault();
 
-  const loanAmt = Number(inputLoanAmount.value);
+  const loanAmt = Math.floor(inputLoanAmount.value);
   if (
     loanAmt > 0 &&
     currentAccount.movements.some(amt => amt >= loanAmt * 0.1)
@@ -249,7 +249,7 @@ btnClose.addEventListener(`click`, e => {
 
   if (
     currentAccount?.username === inputCloseUsername.value &&
-    currentAccount.pin === Number(inputClosePin.value)
+    currentAccount.pin === +inputClosePin.value
   ) {
     // console.log(`Deleted`);
     const deleteAcctIndex = accounts.findIndex(
