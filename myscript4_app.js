@@ -33,8 +33,15 @@ const account4 = {
   pin: 4444,
 };
 
+const account5 = {
+  owner: 'Uwem Akpan',
+  movements: [4300, 10000, 7000, 500, 9900],
+  interestRate: 1,
+  pin: 5555,
+};
+
 // array of individual account objects
-const accounts = [account1, account2, account3, account4];
+const accounts = [account1, account2, account3, account4, account5];
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
